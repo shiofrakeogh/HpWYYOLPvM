@@ -7,6 +7,9 @@ app = Flask(__name__)
 @app.route("/movies", methods=["POST"])
 def movies():
     requestData = request.get_json()
+    if not requestData or "message" not in requestData:
+        return jsonify({"error": "message field is required"}), 400
+    
     user_message = requestData["message"]
     prompt = "You are a movie query parser. Given a user's question, return JSON with these fields: {intent: lookup | recommend | unknown, title: string or null, year: int or null, genre: string or null, min_rating: float or null} If the user is asking about a specific movie, classify as 'lookup', and a 'lookup' should return a single movie row. If the user is looking for multiple movie titles, classify as 'recommend', 'recommend' should return multiple movie rows. Otherwise classify as unknown, leave all other fields as null. Set any fields the user doesn't mention to null. Do not make up values. Respond with only a JSON object, no other text."
     
@@ -18,7 +21,13 @@ def movies():
         ]
     )
 
-    responseData = json.loads(response["message"]["content"])
+    try:
+        responseData = json.loads(response["message"]["content"])
+        if responseData["intent"] == "unknown":
+            return jsonify({"error": "can't help with that specific request"}), 400
+    except json.JSONDecodeError:
+        return jsonify({"error": "server returned malformed code"}), 500
+    
     query, params = build_query(responseData)
 
     try:
@@ -28,7 +37,7 @@ def movies():
             result = cursor.fetchall()
 
     except sqlite3.Error as e:
-        print(f"An error occurred: {e}")
+        return jsonify({"error": "database error"}), 500        
 
     prompt = "You are a movie recommender. Take the query results and give them back to the user in a friendly conversational format. "
     response = ollama.chat(
