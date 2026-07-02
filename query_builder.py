@@ -6,10 +6,10 @@ def build_query(intent):
     params = []
     if intent["title"] is not None:
         where.append("movies.title LIKE ?")
-        params.append(intent["title"])
+        params.append(f"%{intent['title']}%")
     if intent["genre"] is not None:
         where.append("genres.name LIKE ?")
-        params.append(intent["genre"])
+        params.append(f"%{intent['genre']}%")
     if intent["year"] is not None:
         where.append("movies.year = ?")
         params.append(intent["year"])
