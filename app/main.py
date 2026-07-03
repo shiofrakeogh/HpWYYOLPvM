@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from query_builder import build_query
+from app.query_builder import build_query
 import ollama, json, sqlite3, logging
 
 logging.basicConfig(level=logging.INFO)
@@ -44,6 +44,9 @@ def movies():
             cursor.execute(query, params)
             result = cursor.fetchall()
             logger.info(f"Database was successfully queried. Returned {len(result)} results")
+            if len(result) == 0:
+                logger.info("No results were found in the database")
+                return jsonify({"response": "no movies were found matching your criteria"}), 200
 
     except sqlite3.Error as e:
         logger.error("There was an error with querying the database for results")

@@ -1,4 +1,4 @@
-from query_builder import build_query
+from app.query_builder import build_query
 
 def test_recommend_genre():
     intent = {"intent": "recommend", "title": None, "genre": "Action", "year": None, "min_rating": None}

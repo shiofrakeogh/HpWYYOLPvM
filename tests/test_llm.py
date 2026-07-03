@@ -1,7 +1,7 @@
 from unittest.mock import patch
-from main import app
+from app.main import app
 
-@patch("main.ollama.chat")
+@patch("app.main.ollama.chat")
 def test_llm_request_response(test_ollama):
     test_ollama.side_effect = [
         {"message": {"content": '{"intent": "lookup", "title": "Inception", "genre": null, "year": null, "min_rating": null}'}},

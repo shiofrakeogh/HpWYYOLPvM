@@ -46,7 +46,7 @@ try:
         print("Tables created successfully.")
 
         #Ingest movies data into the database
-        with open("ml-latest-small/movies.csv", "r", encoding="utf-8") as file:
+        with open("data/ml-latest-small/movies.csv", "r", encoding="utf-8") as file:
             movies = csv.reader(file)
             header = next(movies)
             insert_movies = "INSERT INTO movies (movie_id, title, year) VALUES (?, ?, ?)"
@@ -88,7 +88,7 @@ try:
             conn.commit()
 
             
-            with open("ml-latest-small/ratings.csv", "r", encoding="utf-8") as file:
+            with open("data/ml-latest-small/ratings.csv", "r", encoding="utf-8") as file:
                 ratings = csv.reader(file)
                 header = next(ratings)
                 insert_ratings = "INSERT INTO ratings (movie_id, avg_rating, rating_count) VALUES (?, ?, ?)"
