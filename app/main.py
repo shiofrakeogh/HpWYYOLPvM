@@ -16,8 +16,23 @@ def movies():
     
     user_message = requestData["message"]
     logger.info(f"Received message: {user_message}")
-    prompt = "You are a movie query parser. Given a user's question, return JSON with these fields: {intent: lookup | recommend | unknown, title: string or null, year: int or null, genre: string or null, min_rating: float or null} If the user is asking about a specific movie, classify as 'lookup', and a 'lookup' should return a single movie row. If the user is looking for multiple movie titles, classify as 'recommend', 'recommend' should return multiple movie rows. Otherwise classify as unknown, leave all other fields as null. Set any fields the user doesn't mention to null. Do not make up values. Respond with only a JSON object, no other text."
-    
+    prompt = """You are a movie query parser. Given a user's question, return JSON with these fields:
+    {"intent": "lookup|recommend|unknown", "title": "string or null", "genre": "string or null", "year": "int or null", "min_rating": "float or null"}
+
+    If the user is asking about a specific movie, classify as "lookup".
+    If the user is asking for movie suggestions based on criteria, classify as "recommend".
+    Otherwise classify as "unknown", leave all other fields as null.
+
+    Set any fields the user does not mention to null. Do not make up values.
+    Respond with only a JSON object, no other text.
+
+    Example:
+    User: "tell me about Toy Story"
+    Output: {"intent": "lookup", "title": "Toy Story", "genre": null, "year": null, "min_rating": null}
+
+    User: "recommend some action movies"
+    Output: {"intent": "recommend", "title": null, "genre": "Action", "year": null, "min_rating": null}
+    """    
     response = ollama.chat(
         model="llama3",
         messages=[
