@@ -110,3 +110,5 @@ python -m pytest -v
 - There is a limit of 10 on queries. A broad recommend query could still return less relevant results. This could be improved with better ranking or relevance scoring (e.g only include movies above a certain rating even if the user hasn't specified). 
 
 - No conversation history, the user can't continue the conversation (e.g. "tell me more about Toy Story"). This could be addressed by using Ollama's `assistant` role to maintain previous replies across requests.
+
+- Movies with multiple genres produce duplicate rows in query results (one row per genre). Combined with the limit of 10 results, can cut off results prematurely. This could be fixed using `GROUP BY` and `GROUP_CONCAT` to collapse genres into a single row per movie.
