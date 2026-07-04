@@ -17,6 +17,6 @@ def build_query(intent):
     if where:
         base_query += " WHERE " + " AND ".join(where)
 
-    base_query += " LIMIT 10"
+    base_query += " ORDER BY avg_rating DESC LIMIT 10"
 
     return base_query, params
