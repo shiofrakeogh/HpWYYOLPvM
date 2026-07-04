@@ -108,7 +108,7 @@ python -m pytest -v
 
 - LLM responses are non-deterministic, a few tests returned responses with made up values or unexpected types (e.g. lists instead of strings). This could be mitigated with examples in the prompt, but not fully eliminated.
 
-- There is a limit of 10 on queries. A broad recommend query could still return less relevant results. This could be improved with better ranking or relevance scoring (e.g only include movies above a certain rating even if the user hasn't specified). 
+- There is a limit of 10 on queries. A broad recommend query could still return less relevant results. Results are sorted by rating (highest first) to prioritise quality, but further improvement could include relevance scoring or configurable limits.
 
 - No conversation history, the user can't continue the conversation (e.g. "tell me more about Toy Story"). This could be addressed by using Ollama's `assistant` role to maintain previous replies across requests.
 
