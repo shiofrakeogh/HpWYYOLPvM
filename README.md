@@ -89,8 +89,9 @@ Response (200):
 Error responses:
 - `400`: `{"error": "message field is required"}` -> missing or invalid body
 - `400`: `{"error": "can't help with that specific request"}` -> unrecognised intent
-- `500`: `{"error": "server returned malformed code"}` -> LLM returned invalid JSON
+- `500`: `{"error": "server returned malformed response"}` -> LLM returned invalid JSON
 - `500`: `{"error": "database error"}` -> SQL execution failed
+- `503`: `{"error": "LLM service unavailable"}` -> Ollama not running or unreachable
 
 ## Tests
 
