@@ -68,9 +68,9 @@ This app combines structured data retrieval with LLM powered response.
     {"intent": "lookup", "title": "Toy Story", "genre": null, "year": null, "min_rating": null}
     ```
 
-2. **Query Building:**: A parameterised SQL query is dynamically built from the non-null fields in the intent object. This is executed against a SQLite database to retrieve movie data.
+2. **Query Building:** A parameterised SQL query is dynamically built from the non-null fields in the intent object. This is executed against a SQLite database to retrieve movie data.
 
-3. **Response Generation:**: The query results and original question are passed to a second LLM call which generates a conversational answer using the database results.
+3. **Response Generation:** The query results and original question are passed to a second LLM call which generates a conversational answer using the database results.
 
 ## API Endpoint
 
@@ -107,6 +107,6 @@ python -m pytest -v
 
 - LLM responses are non-deterministic, a few tests returned responses with made up values or unexpected types (e.g. lists instead of strings). This could be mitigated with examples in the prompt, but not fully eliminated.
 
-- There is currently no limit on queries. A broad recommend query (e.g. "action movies") could return hundreds of results which makes the second LLM call slow and expensive. This could be fixed by adding a `LIMIT 10` to the query.
+- There is a limit of 10 on queries. A broad recommend query could still return less relevant results. This could be improved with better ranking or relevance scoring (e.g only include movies above a certain rating even if the user hasn't specified). 
 
 - No conversation history, the user can't continue the conversation (e.g. "tell me more about Toy Story"). This could be addressed by using Ollama's `assistant` role to maintain previous replies across requests.
