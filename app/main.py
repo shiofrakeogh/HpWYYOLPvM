@@ -28,7 +28,7 @@ User: "recommend some action movies"
 Output: {"intent": "recommend", "title": null, "genre": "Action", "year": null, "min_rating": null}
 """
 
-RESPONSE_PROMPT = "You are a movie recommender. Take the query results and give them back to the user in a friendly conversational format."
+RESPONSE_PROMPT = "You are a movie recommender. Using only the provided query results, give a friendly conversational response. Do not add information that is not present in the results."
 
 DATABASE = "movies.db"
 MODEL = "llama3"
@@ -94,6 +94,9 @@ def movies():
     except json.JSONDecodeError:
         logger.error("LLM returned invalid JSON")
         return jsonify({"error": "server returned malformed response"}), 500
+    except Exception as e:
+        logger.error(f"LLM service error: {e}")
+        return jsonify({"error": "LLM service unavailable"}), 503
 
     if not validate_intent(intent):
         logger.error(f"LLM returned invalid intent structure: {intent}")
@@ -117,10 +120,15 @@ def movies():
         logger.info("No results found")
         return jsonify({"response": "No movies were found matching your criteria."}), 200
 
-    response_text = generate_response(user_message, result)
+    try:
+        response_text = generate_response(user_message, result)
+    except Exception as e:
+        logger.error(f"LLM service error during response generation: {e}")
+        return jsonify({"error": "LLM service unavailable"}), 503
+
     logger.info(f"Response generated successfully")
     return jsonify({"response": response_text})
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
